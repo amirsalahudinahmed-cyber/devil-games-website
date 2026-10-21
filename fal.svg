@@ -1,16 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Devil Games logo">
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Devil Games logo">
   <defs>
-    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#12080d"/>
-      <stop offset="100%" stop-color="#050507"/>
+    <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#0b0d18"/>
+      <stop offset="45%" stop-color="#171a2d"/>
+      <stop offset="100%" stop-color="#240d28"/>
     </linearGradient>
-    <linearGradient id="accent" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#ff5a67"/>
-      <stop offset="100%" stop-color="#d10f2c"/>
+    <linearGradient id="shine" x1="0%" x2="100%" y1="0%" y2="0%">
+      <stop offset="0%" stop-color="#ff5c7a"/>
+      <stop offset="50%" stop-color="#ff8a45"/>
+      <stop offset="100%" stop-color="#ffe082"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff5f7"/>
+      <stop offset="100%" stop-color="#d9d9f4"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="12" fill="url(#bg)"/>
-  <rect x="5" y="5" width="54" height="54" rx="10" fill="none" stroke="rgba(255,255,255,0.10)"/>
-  <text x="32" y="40" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="900" letter-spacing="1" fill="url(#accent)">DG</text>
-  <path d="M12 49h40" stroke="rgba(255,255,255,0.18)" stroke-linecap="round"/>
+
+  <rect width="512" height="512" rx="56" fill="url(#bg)"/>
+
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="10"/>
+  <circle cx="256" cy="256" r="202" fill="none" stroke="#ff5c7a" stroke-opacity="0.18" stroke-width="3"/>
+
+  <path d="M160 128L160 384C160 406 176 424 198 424H250C328 424 384 362 384 256C384 154 328 92 250 92H198C176 92 160 110 160 128ZM202 134H250C304 134 342 181 342 256C342 334 304 380 250 380H202V134Z" fill="url(#shine)" opacity="0.9"/>
+
+  <path d="M220 226H280C312 226 332 244 332 275C332 307 312 326 280 326H220V226Z" fill="#0a0d1b" opacity="0.9"/>
+
+  <path d="M131 250C143 201 185 160 239 160H323C355 160 383 188 383 220V234H344V220C344 208 335 200 323 200H239C204 200 175 224 171 260L165 304C159 342 192 372 232 372H280C316 372 344 350 352 316H392C383 370 334 412 280 412H234C171 412 121 364 131 300L131 250Z" fill="url(#metal)" opacity="0.96"/>
+
+  <path d="M176 173L201 196L185 234L150 222L176 173Z" fill="#ffaf4d" opacity="0.9"/>
+  <path d="M348 140L386 175L362 210L322 176L348 140Z" fill="#ff6b81" opacity="0.9"/>
+  <path d="M344 336L386 362L361 404L318 374L344 336Z" fill="#ff8a45" opacity="0.9"/>
+
+  <path d="M197 118H250M257 118H313" stroke="#ffffff" stroke-opacity="0.3" stroke-width="12" stroke-linecap="round"/>
+  <path d="M198 394H260" stroke="#ffffff" stroke-opacity="0.25" stroke-width="12" stroke-linecap="round"/>
 </svg>
