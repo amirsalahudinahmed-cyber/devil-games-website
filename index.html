@@ -62,59 +62,13 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:30px}
     <p class="sub">Psychological horror and interactive fiction you can <b>play right in your browser</b>. Just click and step inside.</p>
     <a class="cta" href="https://devil-games123.itch.io/" target="_blank" rel="noopener">Play now on itch.io ▸</a>
     <div class="stats">
-      <div class="stat"><strong>9</strong><small>horror games</small></div>
+      <div class="stat"><strong id="count">9</strong><small>horror games</small></div>
       <div class="stat"><strong>7</strong><small>endings in “What if?”</small></div>
     </div>
   </section>
 
   <h2>Choose Your Nightmare</h2>
-  <section class="grid">
-    <a class="card featured" href="https://devil-games123.itch.io/what-if" target="_blank" rel="noopener">
-      <h3>What if?</h3>
-      <p>A found-footage horror game of brutal choices. 30 rounds, 7 endings… and every decision has a price.</p>
-      <span class="badge">Interactive Fiction · Play in browser</span>
-    </a>
-    <a class="card" href="https://devil-games123.itch.io/the-fourth-knock" target="_blank" rel="noopener">
-      <h3>The Fourth Knock</h3>
-      <p>Every person hears three knocks in a lifetime. No one talks about the fourth.</p>
-      <span class="badge">Horror story</span>
-    </a>
-    <a class="card" href="https://devil-games123.itch.io/line-9" target="_blank" rel="noopener">
-      <h3>Line 9: The Emergency Line</h3>
-      <p>A psychological text-based horror game where one emergency call connects you to a trapped woman.</p>
-      <span class="badge">Interactive Fiction · Play in browser</span>
-    </a>
-    <a class="card" href="https://devil-games123.itch.io/devil-games-os" target="_blank" rel="noopener">
-      <h3>Devil Games OS</h3>
-      <p>Explore a haunted operating system. Trust nothing. Especially ORACLE.</p>
-      <span class="badge">Simulation</span>
-    </a>
-    <a class="card" href="https://devil-games123.itch.io/hardware-inspector" target="_blank" rel="noopener">
-      <h3>Hardware Inspector</h3>
-      <p>Someone sends you their hard drives. Your job is to find out everything you can about their owners.</p>
-      <span class="badge">Simulation · Play in browser</span>
-    </a>
-    <a class="card" href="https://devil-games123.itch.io/the-other-shore" target="_blank" rel="noopener">
-      <h3>The Other Shore</h3>
-      <p>A crossing to the other side. But do you come back the same?</p>
-      <span class="badge">Interactive Fiction · Play in browser</span>
-    </a>
-    <a class="card" href="https://devil-games123.itch.io/denial-perception-test" target="_blank" rel="noopener">
-      <h3>DENIAL: Perception Test</h3>
-      <p>The first psychological stability test. Can you trust what you see?</p>
-      <span class="badge">DENIAL series · 1</span>
-    </a>
-    <a class="card" href="https://devil-games123.itch.io/denial-second-test" target="_blank" rel="noopener">
-      <h3>Denial: Second Test</h3>
-      <p>Psychological stability test number two. It only gets worse.</p>
-      <span class="badge">DENIAL series · 2</span>
-    </a>
-    <a class="card" href="https://devil-games123.itch.io/denial-third-test" target="_blank" rel="noopener">
-      <h3>Denial: Third Test</h3>
-      <p>The last psychological test.</p>
-      <span class="badge">DENIAL series · 3</span>
-    </a>
-  </section>
+  <section class="grid" id="games"></section>
 
   <h2>Why Devil Games?</h2>
   <section class="why">
@@ -130,5 +84,122 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:30px}
   </section>
   <footer>devil-games123.itch.io</footer>
 </main>
+
+<script>
+(function(){
+  var PROFILE = "https://devil-games123.itch.io/";
+  var CACHE_KEY = "dg_games_v1";
+  var grid = document.getElementById("games");
+  var countEl = document.getElementById("count");
+
+  // Fallback list: shown instantly, and used if itch.io can't be reached.
+  // Also supplies nicer descriptions/badges for games it already knows.
+  var KNOWN = [
+    {url:"https://devil-games123.itch.io/what-if", title:"What if?", desc:"A found-footage horror game of brutal choices. 30 rounds, 7 endings… and every decision has a price.", badge:"Interactive Fiction · Play in browser"},
+    {url:"https://devil-games123.itch.io/the-fourth-knock", title:"The Fourth Knock", desc:"Every person hears three knocks in a lifetime. No one talks about the fourth.", badge:"Horror story"},
+    {url:"https://devil-games123.itch.io/line-9", title:"Line 9: The Emergency Line", desc:"A psychological text-based horror game where one emergency call connects you to a trapped woman.", badge:"Interactive Fiction · Play in browser"},
+    {url:"https://devil-games123.itch.io/devil-games-os", title:"Devil Games OS", desc:"Explore a haunted operating system. Trust nothing. Especially ORACLE.", badge:"Simulation"},
+    {url:"https://devil-games123.itch.io/hardware-inspector", title:"Hardware Inspector", desc:"Someone sends you their hard drives. Your job is to find out everything you can about their owners.", badge:"Simulation · Play in browser"},
+    {url:"https://devil-games123.itch.io/the-other-shore", title:"The Other Shore", desc:"A crossing to the other side. But do you come back the same?", badge:"Interactive Fiction · Play in browser"},
+    {url:"https://devil-games123.itch.io/denial-perception-test", title:"DENIAL: Perception Test", desc:"The first psychological stability test. Can you trust what you see?", badge:"DENIAL series · 1"},
+    {url:"https://devil-games123.itch.io/denial-second-test", title:"Denial: Second Test", desc:"Psychological stability test number two. It only gets worse.", badge:"DENIAL series · 2"},
+    {url:"https://devil-games123.itch.io/denial-third-test", title:"Denial: Third Test", desc:"The last psychological test.", badge:"DENIAL series · 3"}
+  ];
+  var KNOWN_MAP = {};
+  KNOWN.forEach(function(g){ KNOWN_MAP[norm(g.url)] = g; });
+
+  function norm(u){ return u.replace(/[#?].*$/,"").replace(/\/+$/,"").toLowerCase(); }
+
+  function render(list){
+    grid.replaceChildren();
+    list.forEach(function(g){
+      var a = document.createElement("a");
+      a.className = "card" + (/\/what-if$/.test(norm(g.url)) ? " featured" : "");
+      a.href = g.url; a.target = "_blank"; a.rel = "noopener";
+      var h = document.createElement("h3"); h.textContent = g.title;
+      var p = document.createElement("p"); p.textContent = g.desc || "";
+      var b = document.createElement("span"); b.className = "badge"; b.textContent = g.badge || "Game";
+      a.appendChild(h); if (g.desc) a.appendChild(p); else p.remove(); a.appendChild(b);
+      grid.appendChild(a);
+    });
+    countEl.textContent = list.length;
+  }
+
+  function sortFeaturedFirst(list){
+    return list.slice().sort(function(a,b){
+      return (/\/what-if$/.test(norm(b.url))?1:0) - (/\/what-if$/.test(norm(a.url))?1:0);
+    });
+  }
+
+  // Parse the itch.io profile page HTML into a list of games.
+  function parse(html){
+    var doc = new DOMParser().parseFromString(html, "text/html");
+    var cells = doc.querySelectorAll(".game_cell");
+    var seen = {}, out = [];
+    cells.forEach(function(c){
+      var a = c.querySelector("a.title, .game_title a, a.game_link");
+      if (!a) return;
+      var url;
+      try { url = new URL(a.getAttribute("href"), PROFILE); } catch(e){ return; }
+      if (!/\.itch\.io$/.test(url.hostname) || url.hostname !== "devil-games123.itch.io") return;
+      var key = norm(url.href);
+      if (seen[key] || key === norm(PROFILE)) return;
+      seen[key] = 1;
+      var known = KNOWN_MAP[key] || {};
+      var descEl = c.querySelector(".game_text");
+      var genreEl = c.querySelector(".game_genre");
+      var title = (a.textContent || "").trim();
+      if (!title) return;
+      out.push({
+        url: url.href,
+        title: title,
+        desc: known.desc || (descEl ? descEl.textContent.trim() : ""),
+        badge: known.badge || (genreEl ? genreEl.textContent.trim() : "Game")
+      });
+    });
+    return out;
+  }
+
+  var PROXIES = [
+    function(u){ return "https://api.allorigins.win/raw?url=" + encodeURIComponent(u); },
+    function(u){ return "https://corsproxy.io/?url=" + encodeURIComponent(u); }
+  ];
+
+  function fetchWithTimeout(url, ms){
+    var ctl = new AbortController();
+    var t = setTimeout(function(){ ctl.abort(); }, ms);
+    return fetch(url, {signal: ctl.signal}).then(function(r){
+      clearTimeout(t);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    }, function(e){ clearTimeout(t); throw e; });
+  }
+
+  function load(i){
+    if (i >= PROXIES.length) return Promise.resolve(null);
+    // cache-bust so a new/removed game shows up right away
+    var target = PROFILE + "?_=" + Date.now();
+    return fetchWithTimeout(PROXIES[i](target), 8000).then(function(html){
+      var games = parse(html);
+      return games.length ? games : load(i + 1);
+    }).catch(function(){ return load(i + 1); });
+  }
+
+  // 1) Show the last known list immediately (cache, else built-in fallback).
+  var initial = KNOWN;
+  try {
+    var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+    if (Array.isArray(cached) && cached.length) initial = cached;
+  } catch(e){}
+  render(sortFeaturedFirst(initial));
+
+  // 2) Then refresh from itch.io: new games appear, deleted ones disappear.
+  load(0).then(function(games){
+    if (!games) return;
+    render(sortFeaturedFirst(games));
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(games)); } catch(e){}
+  });
+})();
+</script>
 </body>
 </html>
